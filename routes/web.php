@@ -3,20 +3,44 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Http;
 
-Route::get('/printful/products', function () {
-    $response = Http::withHeaders([
-        'Authorization' => 'Bearer ' . env('PRINTFUL_API_KEY'),
-        'X-PF-Language' => 'en_GB',
-    ])->get('https://api.printful.com/products');
+Route::get(
+    '/printful/products', function () {
+        $ch = curl_init();
 
-    return response()->json($response->json(), $response->status());
-});
+        curl_setopt($ch, CURLOPT_URL, 'https://api.printful.com/products');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt(
+            $ch, CURLOPT_HTTPHEADER,
+            [
+                'Authorization: Bearer ' . env('PRINTFUL_API_KEY'),
+                'X-PF-Language: en_GB',
+            ]
+        );
 
-Route::get('/printful/products/{id}', function ($id) {
-    $response = Http::withHeaders([
-        'Authorization' => 'Bearer ' . env('PRINTFUL_API_KEY'),
-        'X-PF-Language' => 'en_GB',
-    ])->get("https://api.printful.com/products/{$id}");
+        $result = curl_exec($ch);
+        curl_close($ch);
 
-    return response()->json($response->json(), $response->status());
-});
+        return response()->json(json_decode($result, true));
+    }
+);
+
+Route::get(
+    '/printful/products/{id}', function ($id) {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, `https://api.printful.com/products/{$id}`);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt(
+            $ch, CURLOPT_HTTPHEADER,
+            [
+                'Authorization: Bearer ' . env('PRINTFUL_API_KEY'),
+                'X-PF-Language: en_GB',
+            ]
+        );
+
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return response()->json(json_decode($result, true));
+    }
+);
