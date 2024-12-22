@@ -14,7 +14,6 @@ Route::get(
             [
                 'Authorization: Bearer ' . env('PRINTFUL_API_KEY'),
                 'X-PF-Language: en_GB',
-                'X-PF-Store-Id' => env('PRINTFUL_STORE_ID'),
             ]
         );
 
@@ -39,7 +38,6 @@ Route::get(
             [
                 'Authorization: Bearer ' . env('PRINTFUL_API_KEY'),
                 'X-PF-Language: en_GB',
-                'X-PF-Store-Id' => env('PRINTFUL_STORE_ID'),
             ]
         );
 
