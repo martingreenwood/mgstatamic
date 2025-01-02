@@ -1,0 +1,39 @@
+title: Video
+tabs:
+  main:
+    display: Main
+    sections:
+      -
+        fields:
+          -
+            handle: title
+            field:
+              type: text
+              required: true
+              validate:
+                - required
+          -
+            handle: video_field
+            field:
+              type: video
+              display: 'Video Field'
+          -
+            handle: video_thumbnail
+            field:
+              max_files: 1
+              min_files: 1
+              mode: grid
+              container: assets
+              type: assets
+              display: 'Video Thumbnail'
+  sidebar:
+    display: Sidebar
+    sections:
+      -
+        fields:
+          -
+            handle: slug
+            field:
+              type: slug
+              localizable: true
+              validate: 'max:200'
