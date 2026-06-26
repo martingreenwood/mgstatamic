@@ -1,7 +1,35 @@
 <?php
 
+use App\Mail\ContactEnquiry;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Http;
+
+Route::get('/sanctum/csrf-cookie', function () {
+    csrf_token();
+
+    return response()->noContent();
+});
+
+Route::post('/api/contact', function (Request $request) {
+    $data = $request->validate([
+        'name' => ['required', 'string', 'max:120'],
+        'email' => ['required', 'email', 'max:255'],
+        'company' => ['nullable', 'string', 'max:160'],
+        'projectType' => ['required', 'string', 'max:120'],
+        'message' => ['required', 'string', 'max:5000'],
+        'website' => ['nullable', 'string', 'max:255'],
+    ]);
+
+    if (filled($data['website'] ?? null)) {
+        return response()->noContent();
+    }
+
+    Mail::to(config('mail.contact_recipient', 'hello@martingreenwood.com'))
+        ->send(new ContactEnquiry($data));
+
+    return response()->noContent();
+});
 
 Route::get(
     '/printful/products', function () {
@@ -12,7 +40,7 @@ Route::get(
         curl_setopt(
             $ch, CURLOPT_HTTPHEADER,
             [
-                'Authorization: Bearer ' . env('PRINTFUL_API_KEY'),
+                'Authorization: Bearer '.env('PRINTFUL_API_KEY'),
                 'X-PF-Language: en_GB',
             ]
         );
@@ -36,7 +64,7 @@ Route::get(
         curl_setopt(
             $ch, CURLOPT_HTTPHEADER,
             [
-                'Authorization: Bearer ' . env('PRINTFUL_API_KEY'),
+                'Authorization: Bearer '.env('PRINTFUL_API_KEY'),
                 'X-PF-Language: en_GB',
             ]
         );
